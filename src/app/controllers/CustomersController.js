@@ -105,31 +105,32 @@ class CustomersController {
 
         const data = await Customer.findAll({
             where,
-            include: [{ model: Contact, attributes: ["id", "status"] }],
+            include: [
+                {
+                    model: Contact,
+                    as: "contacts",
+                    attributes: ["id", "status"],
+                },
+            ],
             order,
             limit,
             offset: limit * page - limit,
         });
         return res.json(data);
     }
-    show(req, res) {
-        const id = parseInt(req.params.id);
-        const customer = customers.find((item) => item.id === id);
-        const status = customer ? 200 : 404;
 
-        console.log("GET :: /customers/:id", customer);
+    async show(req, res) {
+        const customer = await Customer.findByPk(req.params.id);
+        if (!customer) {
+            return res.status(404).json({});
+        }
 
-        return res.status(status).json(customer);
+        return res.json(customer);
     }
-    create(req, res) {
-        const { name, site } = req.body;
-        const id = customers[customers.length - 1].id + 1;
+    async create(req, res) {
+        const customer = await Customer.create(req.body);
 
-        const newCustomer = { id, name, site };
-
-        customers.push(newCustomer);
-
-        return res.status(201).json(newCustomer);
+        return res.status(201).json(customer);
     }
     update(req, res) {
         const id = parseInt(req.params.id);

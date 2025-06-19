@@ -14,11 +14,17 @@ class Customer extends Model {
                     singular: "customer",
                     plural: "customers",
                 },
+                tableName: "customers",
             },
         );
     }
+
     static associate(models) {
-        this.hasMany(models.Contact);
+        this.hasMany(models.Contact, {
+            foreignKey: "customer_id", // ✅ deve bater com o model Contact
+            as: "contacts",            // ✅ importante para usar com include
+        });
     }
 }
+
 export default Customer;
