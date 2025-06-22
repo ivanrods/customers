@@ -1,25 +1,8 @@
 import Customer from "../models/Customer";
+import * as Yup from "yup";
 import { Op } from "sequelize";
 import { parseISO } from "date-fns";
 import Contact from "../models/Contact";
-
-let customers = [
-    {
-        id: 1,
-        name: "Dev samurai",
-        site: "http://devsamurai.com",
-    },
-    {
-        id: 2,
-        name: "Dev gui",
-        site: "http://devsamurai.com",
-    },
-    {
-        id: 4,
-        name: "Dev mario",
-        site: "http://devsamurai.com",
-    },
-];
 
 class CustomersController {
     async index(req, res) {
@@ -128,30 +111,44 @@ class CustomersController {
         return res.json(customer);
     }
     async create(req, res) {
+        const schema = Yup.object().shape({
+            name: Yup.string().required(),
+            email: Yup.string().email().required(),
+            status: Yup.string().uppercase(),
+        });
+        if (!(await schema.isValid(req.body))) {
+            return res.status(400).json({ error: "Erro validate schima." });
+        }
+
         const customer = await Customer.create(req.body);
 
         return res.status(201).json(customer);
     }
-    update(req, res) {
-        const id = parseInt(req.params.id);
-        const { name, site } = req.body;
-
-        const index = customers.findIndex((item) => item.id == id);
-
-        const status = index >= 0 ? 200 : 404;
-        if (index >= 0) {
-            customers[index] = { id: parseInt(id), name, site };
+    async update(req, res) {
+        const schema = Yup.object().shape({
+            name: Yup.string(),
+            email: Yup.string().email(),
+            status: Yup.string().uppercase(),
+        });
+        if (!(await schema.isValid(req.body))) {
+            return res.status(400).json({ error: "Erro validate schima." });
         }
-        return res.status(status).json(customers[index]);
+
+        const customer = await Customer.findByPk(req.params.id);
+        if (!customer) {
+            return res.status(404).json({});
+        }
+        await customer.update(req.body);
+        return res.status(201).json(customer);
     }
-    destroy(req, res) {
-        const id = parseInt(req.params.id);
-        const index = customers.findIndex((item) => item.id === id);
-        const status = index >= 0 ? 200 : 404;
-        if (index >= 0) {
-            customers.splice(index, 1);
+
+    async destroy(req, res) {
+        const customer = await Customer.findByPk(req.params.id);
+        if (!customer) {
+            return res.status(404).json({});
         }
-        return res.status(status).json();
+        await customer.destroy();
+        return res.status();
     }
 }
 
