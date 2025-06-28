@@ -3,7 +3,6 @@ import { Op } from "sequelize";
 import { parseISO } from "date-fns";
 import User from "../models/User";
 import WellcomeEmailJob from "../jobs/WellcomeEmailJob";
-import DummyJob from "../jobs/DummyJob";
 import Queue from "../../lib/Queue";
 
 class UsersController {
