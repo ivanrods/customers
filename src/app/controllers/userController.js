@@ -2,7 +2,10 @@ import * as Yup from "yup";
 import { Op } from "sequelize";
 import { parseISO } from "date-fns";
 import User from "../models/User";
-import Mail from "../lib/Mail";
+import WellcomeEmailJob from "../jobs/WellcomeEmailJob";
+import DummyJob from "../jobs/DummyJob";
+import Queue from "../../lib/Queue";
+
 class UsersController {
     async index(req, res) {
         const {
@@ -93,16 +96,9 @@ class UsersController {
         const { id, name, email, file_id, createdAt, updatedAt } =
             await User.create(req.body);
 
-        try {
-            await Mail.send({
-                to: email,
-                subject: "Bem-vindo!",
-                text: `Olá ${name}, seu cadastro foi realizado com sucesso.`,
-            });
-        } catch (err) {
-            console.error("Erro ao enviar e-mail:", err);
-        }
 
+        await Queue.add(WellcomeEmailJob.key, { name, email });
+        
         return res
             .status(201)
             .json({ id, name, file_id, email, createdAt, updatedAt });

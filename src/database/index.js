@@ -1,5 +1,5 @@
+import 'dotenv/config'
 import Sequelize from "sequelize";
-
 import config from "../config/database";
 
 import Customer from "../app/models/Customer";
