@@ -14,7 +14,7 @@ class File extends Model {
                     singular: "file",
                     plural: "files",
                 },
-                tableName: "file",
+                tableName: "files",
             },
         );
     }
@@ -22,7 +22,7 @@ class File extends Model {
     static associate(models) {
         this.hasMany(models.User, {
             foreignKey: "file_id", 
-            as: "files",            
+            as: "users",            
         });
     }
 }

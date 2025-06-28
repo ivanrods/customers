@@ -35,6 +35,6 @@ routes.post("/customers/:customerId/contacts", contacts.create);
 routes.put("/customers/:customerId/contacts/:id", contacts.update);
 routes.delete("/customers/:customerId/contacts/:id", contacts.destroy);
 
-routes.post("/files", upload.any(), files.create);
+routes.post("/files", upload.single("meuarquivo"), files.create);
 
 export default routes;
