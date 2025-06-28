@@ -7,8 +7,11 @@ export default {
         filename: (req, file, callback) => {
             crypto.randomBytes(16, (err, res) => {
                 if (err) return callback(err);
-               
-                return callback(null, res.toString('hex') + extname(file.originalname));
+
+                return callback(
+                    null,
+                    res.toString("hex") + extname(file.originalname),
+                );
             });
         },
     }),

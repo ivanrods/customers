@@ -14,15 +14,15 @@ class Contact extends Model {
                     singular: "contact",
                     plural: "contacts",
                 },
-                tableName: "contacts", // ✅ garante que o Sequelize use a tabela correta
+                tableName: "contacts", 
             },
         );
     }
 
     static associate(models) {
         this.belongsTo(models.Customer, {
-            foreignKey: "customer_id", // ✅ Nome certo após a migration
-            as: "customer", // opcional: alias inverso
+            foreignKey: "customer_id",
+            as: "customer",
         });
     }
 }

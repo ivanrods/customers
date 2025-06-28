@@ -21,8 +21,8 @@ class Customer extends Model {
 
     static associate(models) {
         this.hasMany(models.Contact, {
-            foreignKey: "customer_id", // ✅ deve bater com o model Contact
-            as: "contacts",            // ✅ importante para usar com include
+            foreignKey: "customer_id", 
+            as: "contacts",     
         });
     }
 }
